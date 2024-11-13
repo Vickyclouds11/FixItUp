@@ -1,14 +1,14 @@
 package FixItUp.FixItUp.Servicios;
 
 import Entidad.Administrador;
-import Repositorios.Repositorio;
+import Repositorios.repositorio;
 import java.util.List;
 
 public class Servicio {
-    private Repositorio repositorio = new Repositorio();
+    private repositorio Repositorio = new repositorio();
 
     public boolean login(String usuario, String contraseña) {
-        for (Administrador admin : repositorio.findAll()) {
+        for (Administrador admin : Repositorio.findAll()) {
             if (admin.getUsuario().equals(usuario) && admin.getContraseña().equals(contraseña)) {
                 return true;
             }

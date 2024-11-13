@@ -1,44 +1,54 @@
 package FixItUp.FixItUp.Controllers;
 
+
+
+import Entidad.Administrador;
+import Servicios.Servicio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/administrador")
 public class Controlador {
-  Servicio servicio = new Servicio();
 
-  @GetMapping("/Get")
-    public List<Administrador> mostrarLista() {
-        return servicio.getContraseña();
+    @Autowired
+    private Servicio servicio;
+
+ 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
+        String usuario = loginData.get("usuario");
+        String contraseña = loginData.get("contraseña");
+        boolean success = servicio.login(usuario, contraseña);
+        return success ? ResponseEntity.ok("Login exitoso") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login fallido");
     }
+
+ 
+    @GetMapping("/usuarios")
+    public List<Administrador> listarUsuarios() {
+        return servicio.listarUsuarios();
+    }
+
+
+    @PostMapping("/usuarios")
+    public Administrador agregarUsuario(@RequestBody Administrador administrador) {
+        return servicio.agregarUsuario(administrador);
+    }
+
   
-    @PostMapping("/Post")
-    public Contraseña agregar(@RequestBody Contraseña contraseña) {
-        return servicio.agregarContraseña(contraseña);
+    @PutMapping("/usuarios/{id}")
+    public ResponseEntity<Administrador> actualizarUsuario(@PathVariable Long id, @RequestBody Administrador detallesUsuario) {
+        return ResponseEntity.ok(servicio.actualizarUsuario(id, detallesUsuario));
     }
 
-    
-    @PutMapping("/{nombre}")
-    public String actualizar(@PathVariable String nombre, @RequestBody Contraseña contraseñaActualizada) {
-        for (Contraseña contraseña: mostrarLista()) {
-            if (contraseña.getNombre().equalsIgnoreCase(nombre)) {
-                contraseña.setPassword(contraseñaActualizada.getPassword());
-                return "Persona con nombre " + nombre + " ha sido actualizada.";
-            }
-        }
-        return "Persona con nombre " + nombre + " no encontrada.";
+    @DeleteMapping("/usuarios/{id}")
+    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
+        servicio.eliminarUsuario(id);
+        return ResponseEntity.noContent().build();
     }
-
-
-
-    @DeleteMapping("/Delete/{nombre}")
-    public String Eliminar(@PathVariable String nombre){
-        boolean eliminado = servicio.eliminarContraseña(nombre);
-        if (eliminado) {
-            return "Persona " + nombre + " eliminada con éxito.";
-        } else {
-            return "No se encontró ninguna persona con el nombre " + nombre + ".";
-        }
-    }
-  
 }
-  
-
-  
-

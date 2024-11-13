@@ -2,48 +2,39 @@ package FixItUp.FixItUp.Servicios;
 
 import Entidad.Administrador;
 import Repositorios.Repositorio;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
-@Service
 public class Servicio {
+    private Repositorio repositorio = new Repositorio();
 
-    @Autowired
-    private Repositorio repositorio;
-
-    
     public boolean login(String usuario, String contraseña) {
-        Optional<Administrador> admin = repositorio.findAll().stream()
-                .filter(a -> a.getUsuario().equals(usuario) && a.getContraseña().equals(contraseña))
-                .findFirst();
-        return admin.isPresent();
+        for (Administrador admin : repositorio.findAll()) {
+            if (admin.getUsuario().equals(usuario) && admin.getContraseña().equals(contraseña)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    
     public List<Administrador> listarUsuarios() {
         return repositorio.findAll();
     }
 
-    
-    public Administrador agregarUsuario(Administrador administrador) {
-        return repositorio.save(administrador);
+    public void agregarUsuario(Administrador administrador) {
+        repositorio.save(administrador);
     }
 
-    
-    public Administrador actualizarUsuario(Long id, Administrador detallesUsuario) {
-        Administrador admin = repositorio.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-        admin.setUsuario(detallesUsuario.getUsuario());
-        admin.setContraseña(detallesUsuario.getContraseña());
-        return repositorio.save(admin);
+    public boolean actualizarUsuario(Long id, String nuevoUsuario, String nuevaContraseña) {
+        Administrador admin = repositorio.findById(id);
+        if (admin != null) {
+            admin.setUsuario(nuevoUsuario);
+            admin.setContraseña(nuevaContraseña);
+            return true;
+        }
+        return false;
     }
 
-    
-    public void eliminarUsuario(Long id) {
-        repositorio.deleteById(id);
-    }
+    public boolean eliminarUsuario(Long id) {
+        return repositorio.deleteById(id);
+    }
 }
-

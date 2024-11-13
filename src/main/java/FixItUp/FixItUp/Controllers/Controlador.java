@@ -3,19 +3,17 @@ package FixItUp.FixItUp.Controllers;
 import Entidad.Administrador;
 import Servicios.Servicio;
 import java.util.List;
-import java.util.Scanner;
 
 public class Controlador {
     private Servicio servicio;
     private boolean sesionIniciada;
 
-    // Constructor para inicializar el servicio
     public Controlador() {
         this.servicio = new Servicio();
         this.sesionIniciada = false;
     }
 
-    // Método para iniciar sesión
+    
     public void iniciarSesion(String usuario, String contraseña) {
         if (servicio.login(usuario, contraseña)) {
             sesionIniciada = true;
@@ -25,7 +23,8 @@ public class Controlador {
         }
     }
 
-    // Método GET para listar usuarios (solo si hay sesión iniciada)
+    
+    @GetMapping("/usuarios")
     public void listarUsuarios() {
         if (sesionIniciada) {
             List<Administrador> usuarios = servicio.listarUsuarios();
@@ -38,7 +37,8 @@ public class Controlador {
         }
     }
 
-    // Método POST para crear un nuevo usuario
+    
+    @PostMapping("/usuarios")
     public void crearUsuario(String nuevoUsuario, String nuevaContraseña) {
         if (sesionIniciada) {
             Administrador nuevoAdmin = new Administrador(nuevoUsuario, nuevaContraseña);
@@ -49,7 +49,8 @@ public class Controlador {
         }
     }
 
-    // Método PUT para actualizar un usuario existente
+    
+    @PutMapping("/usuarios/{id}")
     public void actualizarUsuario(Long id, String usuarioActualizado, String contraseñaActualizada) {
         if (sesionIniciada) {
             boolean actualizado = servicio.actualizarUsuario(id, usuarioActualizado, contraseñaActualizada);
@@ -63,7 +64,8 @@ public class Controlador {
         }
     }
 
-    // Método DELETE para eliminar un usuario
+    
+    @DeleteMapping("/usuarios/{id}")
     public void eliminarUsuario(Long id) {
         if (sesionIniciada) {
             boolean eliminado = servicio.eliminarUsuario(id);

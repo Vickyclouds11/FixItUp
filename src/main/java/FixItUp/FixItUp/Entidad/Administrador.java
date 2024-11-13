@@ -1,25 +1,21 @@
 package FixItUp.FixItUp.Entidad;
 
-import javax.persistence.*;
 
-@Entity
-@Table(name = "administradores")
 public class Administrador {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String usuario;
     private String contraseña;
+    private static Long contadorId = 1L;
 
-    // Getters y Setters
-    public Long getId() {
-        return id;
+    public Administrador(String usuario, String contraseña) {
+        this.id = contadorId++;
+        this.usuario = usuario;
+        this.contraseña = contraseña;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+   
+    public Long getId() {
+        return id;
     }
 
     public String getUsuario() {

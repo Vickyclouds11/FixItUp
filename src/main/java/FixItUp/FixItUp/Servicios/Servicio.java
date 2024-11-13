@@ -1,28 +1,49 @@
 package FixItUp.FixItUp.Servicios;
 
+import Entidad.Administrador;
+import Repositorios.Repositorio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
 public class Servicio {
 
-    ArrayList<Administrador> lista = new ArrayList<>();
+    @Autowired
+    private Repositorio repositorio;
 
-    public Servicio() {
-        lista.add(new Administrador("Gerardo","daSDJSDJ203"));
-        lista.add(new Administrador("Alfredo","DASFMsas32"));
-        lista.add(new Administrador("Maria","D3DNass34dsd"));
-        lista.add(new Administrador("Julian","ODSsdme392"));
+    
+    public boolean login(String usuario, String contraseña) {
+        Optional<Administrador> admin = repositorio.findAll().stream()
+                .filter(a -> a.getUsuario().equals(usuario) && a.getContraseña().equals(contraseña))
+                .findFirst();
+        return admin.isPresent();
     }
 
-    public ArrayList<Administrador> getContraseña(){
-        return lista;
+    
+    public List<Administrador> listarUsuarios() {
+        return repositorio.findAll();
     }
 
-    public Administrador agregarContraseña(Administrador p){
-        lista.add(p);
-        return p;
+    
+    public Administrador agregarUsuario(Administrador administrador) {
+        return repositorio.save(administrador);
     }
 
-    public boolean eliminarContraseña(String nombre) {
-        return lista.removeIf(contraseña -> contraseña.getNombre().equalsIgnoreCase(nombre));
+    
+    public Administrador actualizarUsuario(Long id, Administrador detallesUsuario) {
+        Administrador admin = repositorio.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        admin.setUsuario(detallesUsuario.getUsuario());
+        admin.setContraseña(detallesUsuario.getContraseña());
+        return repositorio.save(admin);
     }
 
+    
+    public void eliminarUsuario(Long id) {
+        repositorio.deleteById(id);
+    }
 }
 

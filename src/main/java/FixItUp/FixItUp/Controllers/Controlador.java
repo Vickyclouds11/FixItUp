@@ -1,54 +1,79 @@
 package FixItUp.FixItUp.Controllers;
 
-
-
 import Entidad.Administrador;
 import Servicios.Servicio;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Map;
+import java.util.Scanner;
 
-@RestController
-@RequestMapping("/administrador")
 public class Controlador {
-
-    @Autowired
     private Servicio servicio;
+    private boolean sesionIniciada;
 
- 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginData) {
-        String usuario = loginData.get("usuario");
-        String contraseña = loginData.get("contraseña");
-        boolean success = servicio.login(usuario, contraseña);
-        return success ? ResponseEntity.ok("Login exitoso") : ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Login fallido");
+    // Constructor para inicializar el servicio
+    public Controlador() {
+        this.servicio = new Servicio();
+        this.sesionIniciada = false;
     }
 
- 
-    @GetMapping("/usuarios")
-    public List<Administrador> listarUsuarios() {
-        return servicio.listarUsuarios();
+    // Método para iniciar sesión
+    public void iniciarSesion(String usuario, String contraseña) {
+        if (servicio.login(usuario, contraseña)) {
+            sesionIniciada = true;
+            System.out.println("Inicio de sesión exitoso.");
+        } else {
+            System.out.println("Error en el inicio de sesión.");
+        }
     }
 
-
-    @PostMapping("/usuarios")
-    public Administrador agregarUsuario(@RequestBody Administrador administrador) {
-        return servicio.agregarUsuario(administrador);
+    // Método GET para listar usuarios (solo si hay sesión iniciada)
+    public void listarUsuarios() {
+        if (sesionIniciada) {
+            List<Administrador> usuarios = servicio.listarUsuarios();
+            System.out.println("Usuarios:");
+            for (Administrador admin : usuarios) {
+                System.out.println("ID: " + admin.getId() + ", Usuario: " + admin.getUsuario());
+            }
+        } else {
+            System.out.println("Debe iniciar sesión primero.");
+        }
     }
 
-  
-    @PutMapping("/usuarios/{id}")
-    public ResponseEntity<Administrador> actualizarUsuario(@PathVariable Long id, @RequestBody Administrador detallesUsuario) {
-        return ResponseEntity.ok(servicio.actualizarUsuario(id, detallesUsuario));
+    // Método POST para crear un nuevo usuario
+    public void crearUsuario(String nuevoUsuario, String nuevaContraseña) {
+        if (sesionIniciada) {
+            Administrador nuevoAdmin = new Administrador(nuevoUsuario, nuevaContraseña);
+            servicio.agregarUsuario(nuevoAdmin);
+            System.out.println("Usuario creado exitosamente.");
+        } else {
+            System.out.println("Debe iniciar sesión primero.");
+        }
     }
 
-    @DeleteMapping("/usuarios/{id}")
-    public ResponseEntity<Void> eliminarUsuario(@PathVariable Long id) {
-        servicio.eliminarUsuario(id);
-        return ResponseEntity.noContent().build();
+    // Método PUT para actualizar un usuario existente
+    public void actualizarUsuario(Long id, String usuarioActualizado, String contraseñaActualizada) {
+        if (sesionIniciada) {
+            boolean actualizado = servicio.actualizarUsuario(id, usuarioActualizado, contraseñaActualizada);
+            if (actualizado) {
+                System.out.println("Usuario actualizado.");
+            } else {
+                System.out.println("Usuario no encontrado.");
+            }
+        } else {
+            System.out.println("Debe iniciar sesión primero.");
+        }
+    }
+
+    // Método DELETE para eliminar un usuario
+    public void eliminarUsuario(Long id) {
+        if (sesionIniciada) {
+            boolean eliminado = servicio.eliminarUsuario(id);
+            if (eliminado) {
+                System.out.println("Usuario eliminado.");
+            } else {
+                System.out.println("Usuario no encontrado.");
+            }
+        } else {
+            System.out.println("Debe iniciar sesión primero.");
+        }
     }
 }

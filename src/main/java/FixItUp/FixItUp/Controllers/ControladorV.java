@@ -31,12 +31,12 @@ public class ControladorV {
         }
     }*/
 
-    @GetMapping("/Admin")
+    @GetMapping("/Vend")
     public List<Vendedor> listarUsuarios() {
         return servicio.listarUsuarios();
     }
 
-    @PostMapping("/Post/Admin")
+    @PostMapping("/Post/Vend")
     public Vendedor agregar(@RequestBody Vendedor vendedor) {
         return servicio.agregarUsuario(vendedor);
     }

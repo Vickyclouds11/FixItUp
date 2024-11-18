@@ -17,3 +17,18 @@ public class Notificacion {
     @Column(nullable = false)
     private LocalDate fechaEnvio;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Tipo tipo;
+
+
+    public Notificacion() {
+    }
+
+    public Notificacion(String contenido, LocalDate fechaEnvio, Tipo tipo) {
+        this.contenido = contenido;
+        this.fechaEnvio = fechaEnvio;
+        this.tipo = tipo;
+    }
+
+    

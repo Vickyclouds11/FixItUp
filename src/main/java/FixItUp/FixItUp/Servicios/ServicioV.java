@@ -1,7 +1,6 @@
 package FixItUp.FixItUp.Servicios;
 
 import FixItUp.FixItUp.Entidad.Vendedor;
-import FixItUp.FixItUp.Repositorios.RepositoryC;
 import FixItUp.FixItUp.Repositorios.RepositoryV;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

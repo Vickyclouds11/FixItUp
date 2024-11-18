@@ -1,57 +1,49 @@
 package FixItUp.FixItUp.Controllers;
 
-import Entidad.Administrador;
-import Servicios.Servicio;
+import FixItUp.FixItUp.Entidad.Administrador;
+import FixItUp.FixItUp.Servicios.Servicio;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+
 import java.util.List;
 
+@CrossOrigin("http://127.0.0.1:5501")
+@RestController
 public class Controlador {
-    private Servicio servicio;
+
+    private final Servicio servicio;
     private boolean sesionIniciada;
 
-    public Controlador() {
-        this.servicio = new Servicio();
+
+    @Autowired
+    public Controlador(Servicio servicio) {
+        this.servicio = servicio;
         this.sesionIniciada = false;
     }
 
-    
-    public void iniciarSesion(String usuario, String contraseña) {
+    @PostMapping("/iniciar-sesion")
+    public String iniciarSesion(@RequestParam String usuario, @RequestParam String contraseña) {
         if (servicio.login(usuario, contraseña)) {
             sesionIniciada = true;
-            System.out.println("Inicio de sesión exitoso.");
+            return "Inicio de sesión exitoso.";
         } else {
-            System.out.println("Error en el inicio de sesión.");
+            return "Error en el inicio de sesión.";
         }
     }
 
-    
-    @GetMapping("/usuarios")
-    public void listarUsuarios() {
-        if (sesionIniciada) {
-            List<Administrador> usuarios = servicio.listarUsuarios();
-            System.out.println("Usuarios:");
-            for (Administrador admin : usuarios) {
-                System.out.println("ID: " + admin.getId() + ", Usuario: " + admin.getUsuario());
-            }
-        } else {
-            System.out.println("Debe iniciar sesión primero.");
-        }
+    @GetMapping("/Admin")
+    public List<Administrador> listarUsuarios() {
+        return servicio.listarUsuarios();
     }
 
-    
-    @PostMapping("/usuarios")
-    public void crearUsuario(String nuevoUsuario, String nuevaContraseña) {
-        if (sesionIniciada) {
-            Administrador nuevoAdmin = new Administrador(nuevoUsuario, nuevaContraseña);
-            servicio.agregarUsuario(nuevoAdmin);
-            System.out.println("Usuario creado exitosamente.");
-        } else {
-            System.out.println("Debe iniciar sesión primero.");
-        }
+    @PostMapping("/Post/Admin")
+    public Administrador agregar(@RequestBody Administrador administrador) {
+        return servicio.agregarUsuario(administrador);
     }
 
-    
     @PutMapping("/usuarios/{id}")
-    public void actualizarUsuario(Long id, String usuarioActualizado, String contraseñaActualizada) {
+    public void actualizarUsuario(@PathVariable String id, @RequestParam String usuarioActualizado, @RequestParam String contraseñaActualizada) {
         if (sesionIniciada) {
             boolean actualizado = servicio.actualizarUsuario(id, usuarioActualizado, contraseñaActualizada);
             if (actualizado) {
@@ -64,9 +56,8 @@ public class Controlador {
         }
     }
 
-    
     @DeleteMapping("/usuarios/{id}")
-    public void eliminarUsuario(Long id) {
+    public void eliminarUsuario(@PathVariable String id) {
         if (sesionIniciada) {
             boolean eliminado = servicio.eliminarUsuario(id);
             if (eliminado) {

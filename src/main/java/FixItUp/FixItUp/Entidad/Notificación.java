@@ -31,4 +31,49 @@ public class Notificacion {
         this.tipo = tipo;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
+    }
+
+    public LocalDate getFechaEnvio() {
+        return fechaEnvio;
+    }
+
+    public void setFechaEnvio(LocalDate fechaEnvio) {
+        this.fechaEnvio = fechaEnvio;
+    }
+
+    public Tipo getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(Tipo tipo) {
+        this.tipo = tipo;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Notificacion{" +
+                "id=" + id +
+                ", tipo='" + tipo + '\'' +
+                ", Contenido=" + contenido +
+                ", fechaEnvio=" + fechaEnvio +
+                '}';
+    }
+}
+
+
     

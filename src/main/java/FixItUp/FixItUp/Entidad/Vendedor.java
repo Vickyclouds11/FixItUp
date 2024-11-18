@@ -1,8 +1,10 @@
 package FixItUp.FixItUp.Entidad;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+@Entity
 public class Vendedor {
     @Id
     private String idV;
@@ -32,6 +34,7 @@ public class Vendedor {
     private String contraseñaV;
 
     public Vendedor() {
+
     }
 
     public Vendedor(String idV, String nombreV, String apellidoV, String direccionV, String servicioPrestadoV, int añosExpV, String ciudadV, String usuarioV, String contraseñaV) {

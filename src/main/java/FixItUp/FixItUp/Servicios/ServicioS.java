@@ -1,5 +1,4 @@
 package FixItUp.FixItUp.Servicios;
-import FixItUp.FixItUp.Entidad.Estado;
 import FixItUp.FixItUp.Entidad.Servicio;
 import FixItUp.FixItUp.Repositorios.RepositoryS;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +26,7 @@ public class ServicioS {
         return repositorio.save(serv);
     }
 
-    public boolean actualizarUsuario(String idS, String nombreS, String nuevaDescS, String fechaCreacionS, Estado nuevoEstadoS) {
+    public boolean actualizarUsuario(String idS, String nombreS, String nuevaDescS, String fechaCreacionS, String nuevoEstadoS) {
         Servicio serv = repositorio.findById(idS).orElse(null);
         if (serv != null) {
             serv.setDescS(nuevaDescS);

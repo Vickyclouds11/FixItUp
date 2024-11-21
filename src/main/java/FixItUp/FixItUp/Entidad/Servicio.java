@@ -16,13 +16,13 @@ public class Servicio {
     @Column (nullable = false, length = 10)
     private String fechaCreacionS;
 
-    @Enumerated(EnumType.STRING)
-    private Estado estado;
+    @Column (nullable = false, length = 10)
+    private String estado;
 
     public Servicio() {
     }
 
-    public Servicio(String idS, String nombreS, String descS, String fechaCreacionS, Estado estado) {
+    public Servicio(String idS, String nombreS, String descS, String fechaCreacionS, String estado) {
         this.idS = idS;
         this.nombreS = nombreS;
         this.descS = descS;
@@ -62,11 +62,11 @@ public class Servicio {
         this.fechaCreacionS = fechaCreacionS;
     }
 
-    public Estado getEstado() {
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(Estado estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 

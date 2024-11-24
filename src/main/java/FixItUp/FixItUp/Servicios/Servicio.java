@@ -1,40 +1,53 @@
 package FixItUp.FixItUp.Servicios;
 
-import Entidad.Administrador;
-import Repositorios.repositorio;
+import FixItUp.FixItUp.Entidad.Administrador;
+import FixItUp.FixItUp.Repositorios.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.Optional;
 
+@Service
 public class Servicio {
-    private repositorio Repositorio = new repositorio();
+
+    private final Repository repositorio;
+
+    @Autowired
+    public Servicio(Repository repositorio) {
+        this.repositorio = repositorio;
+    }
 
     public boolean login(String usuario, String contraseña) {
-        for (Administrador admin : Repositorio.findAll()) {
-            if (admin.getUsuario().equals(usuario) && admin.getContraseña().equals(contraseña)) {
-                return true;
-            }
-        }
-        return false;
+        return repositorio.findAll().stream()
+                .anyMatch(admin -> admin.getUsuario().equals(usuario) && admin.getContraseña().equals(contraseña));
     }
 
     public List<Administrador> listarUsuarios() {
         return repositorio.findAll();
     }
 
-    public void agregarUsuario(Administrador administrador) {
-        repositorio.save(administrador);
+    public Administrador agregarUsuario(Administrador administrador) {
+        return repositorio.save(administrador);
     }
 
-    public boolean actualizarUsuario(Long id, String nuevoUsuario, String nuevaContraseña) {
-        Administrador admin = repositorio.findById(id);
-        if (admin != null) {
+    public boolean actualizarUsuario(String id, String nuevoUsuario, String nuevaContraseña) {
+        Optional<Administrador> adminOptional = repositorio.findById(id);
+        if (adminOptional.isPresent()) {
+            Administrador admin = adminOptional.get();
             admin.setUsuario(nuevoUsuario);
             admin.setContraseña(nuevaContraseña);
+            repositorio.save(admin);
             return true;
         }
         return false;
     }
 
-    public boolean eliminarUsuario(Long id) {
-        return repositorio.deleteById(id);
+    public boolean eliminarUsuario(String id) {
+        if (repositorio.existsById(id)) {
+            repositorio.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
+

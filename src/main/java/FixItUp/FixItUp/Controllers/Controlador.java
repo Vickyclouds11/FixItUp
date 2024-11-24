@@ -3,18 +3,18 @@ package FixItUp.FixItUp.Controllers;
 import FixItUp.FixItUp.Entidad.Administrador;
 import FixItUp.FixItUp.Servicios.Servicio;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 
 import java.util.List;
 
 @CrossOrigin("http://127.0.0.1:5501")
 @RestController
+@RequestMapping("/api") 
 public class Controlador {
 
     private final Servicio servicio;
     private boolean sesionIniciada;
-
 
     @Autowired
     public Controlador(Servicio servicio) {
@@ -23,50 +23,59 @@ public class Controlador {
     }
 
     @PostMapping("/iniciar-sesion")
-    public String iniciarSesion(@RequestParam String usuario, @RequestParam String contraseña) {
+    public ResponseEntity<String> iniciarSesion(@RequestParam String usuario, @RequestParam String contraseña) {
         if (servicio.login(usuario, contraseña)) {
             sesionIniciada = true;
-            return "Inicio de sesión exitoso.";
+            return ResponseEntity.ok("Inicio de sesión exitoso.");
         } else {
-            return "Error en el inicio de sesión.";
+            return ResponseEntity.status(401).body("Error en el inicio de sesión.");
         }
     }
 
-    @GetMapping("/Admin")
-    public List<Administrador> listarUsuarios() {
-        return servicio.listarUsuarios();
+    @GetMapping("/admin")
+    public ResponseEntity<List<Administrador>> listarUsuarios() {
+        if (sesionIniciada) {
+            return ResponseEntity.ok(servicio.listarUsuarios());
+        } else {
+            return ResponseEntity.status(403).build(); // Retornar error 403 si no está autenticado
+        }
     }
 
-    @PostMapping("/Post/Admin")
-    public Administrador agregar(@RequestBody Administrador administrador) {
-        return servicio.agregarUsuario(administrador);
+    @PostMapping("/admin")
+    public ResponseEntity<Administrador> agregar(@RequestBody Administrador administrador) {
+        if (sesionIniciada) {
+            Administrador nuevoAdministrador = servicio.agregarUsuario(administrador);
+            return ResponseEntity.ok(nuevoAdministrador);
+        } else {
+            return ResponseEntity.status(403).build();
+        }
     }
 
     @PutMapping("/usuarios/{id}")
-    public void actualizarUsuario(@PathVariable String id, @RequestParam String usuarioActualizado, @RequestParam String contraseñaActualizada) {
+    public ResponseEntity<String> actualizarUsuario(@PathVariable String id, @RequestParam String usuarioActualizado, @RequestParam String contraseñaActualizada) {
         if (sesionIniciada) {
             boolean actualizado = servicio.actualizarUsuario(id, usuarioActualizado, contraseñaActualizada);
             if (actualizado) {
-                System.out.println("Usuario actualizado.");
+                return ResponseEntity.ok("Usuario actualizado.");
             } else {
-                System.out.println("Usuario no encontrado.");
+                return ResponseEntity.status(404).body("Usuario no encontrado.");
             }
         } else {
-            System.out.println("Debe iniciar sesión primero.");
+            return ResponseEntity.status(403).body("Debe iniciar sesión primero.");
         }
     }
 
     @DeleteMapping("/usuarios/{id}")
-    public void eliminarUsuario(@PathVariable String id) {
+    public ResponseEntity<String> eliminarUsuario(@PathVariable String id) {
         if (sesionIniciada) {
             boolean eliminado = servicio.eliminarUsuario(id);
             if (eliminado) {
-                System.out.println("Usuario eliminado.");
+                return ResponseEntity.ok("Usuario eliminado.");
             } else {
-                System.out.println("Usuario no encontrado.");
+                return ResponseEntity.status(404).body("Usuario no encontrado.");
             }
         } else {
-            System.out.println("Debe iniciar sesión primero.");
+            return ResponseEntity.status(403).body("Debe iniciar sesión primero.");
         }
     }
 }

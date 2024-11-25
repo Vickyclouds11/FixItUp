@@ -33,6 +33,13 @@ public class Vendedor {
     @Column(nullable = false, length = 50)
     private String contraseñaV;
 
+    @OneToMany(mappedBy = "vendedor", cascade = CascadeType.ALL)
+private List<Servicio> servicios;
+
+@OneToMany(mappedBy = "vendedor", cascade = CascadeType.ALL)
+private List<Notificacion> notificaciones;
+
+
     public Vendedor() {
 
     }

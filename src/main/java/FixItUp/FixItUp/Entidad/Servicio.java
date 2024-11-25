@@ -19,6 +19,11 @@ public class Servicio {
     @Column (nullable = false, length = 10)
     private String estado;
 
+    @ManyToOne
+    @JoinColumn(name = "vendedor_id")
+    private Vendedor vendedor;
+
+
     public Servicio() {
     }
 

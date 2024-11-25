@@ -21,6 +21,15 @@ public class Notificacion {
     @Column(nullable = false)
     private Tipo tipo;
 
+    @ManyToOne
+    @JoinColumn(name = "consumidor_id")
+     private Consumidor consumidor;
+
+    @ManyToOne
+    @JoinColumn(name = "vendedor_id")
+     private Vendedor vendedor;
+
+
 
     public Notificacion() {
     }

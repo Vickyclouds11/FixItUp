@@ -9,22 +9,30 @@ public class Consumidor {
 
     @Id
     private String idC;
+    
 
     @Column(nullable = false, length = 50)
     private String nombreC;
+    
 
     @Column(nullable = false, length = 50)
     private String apellidoC;
+    
 
     @Column(nullable = false, length = 50)
     private String usuarioC;
+    
 
     @Column(nullable = false, length = 50)
     private String contraseñaC;
+    
 
     @Column (nullable = false, length = 50)
     private String direccionC;
+    
 
+    @OneToMany(mappedBy = "consumidor", cascade = CascadeType.ALL)
+     private List<Notificacion> notificaciones;
 
     public Consumidor() {
     }
